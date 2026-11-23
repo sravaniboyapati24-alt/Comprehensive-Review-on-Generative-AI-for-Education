@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GenAI Educational Content Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .result-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        img {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Generate Educational Content </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="topic">Enter Topic:</label>
+        <input type="text" name="topic" id="topic" required value="{{ topic }}">
+
+        <label for="role">Select Your Role:</label>
+        <select name="role" id="role" required>
+            <option value="student" {% if role == "student" %}selected{% endif %}>Student</option>
+            <option value="teacher" {% if role == "teacher" %}selected{% endif %}>Teacher</option>
+            <option value="researcher" {% if role == "researcher" %}selected{% endif %}>Researcher</option>
+        </select>
+
+        <button type="submit">Generate Content</button>
+    </form>
+
+    {% if result %}
+        <div class="result-box">
+            <h3>Generated Content:</h3>
+            <div style="white-space: pre-wrap;">{{ result|safe }}</div>
+
+            <!-- PDF download form -->
+            <form action="{% url 'export_pdf' %}" method="get" target="_blank" style="margin-top: 20px;">
+                <input type="hidden" name="result" value="{{ result|escape }}">
+                <input type="hidden" name="topic" value="{{ topic }}">
+                <input type="hidden" name="role" value="{{ role }}">
+                <button type="submit">Download as PDF</button>
+            </form>
+        </div>
+    {% endif %}
+
+</body>
+</html>
